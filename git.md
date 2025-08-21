@@ -1,11 +1,3 @@
-Of course. It's a smart practice to consolidate personal notes into a well-structured, universal guide. I have integrated the professional contribution workflow we discussed into your existing cheat sheet.
-
-I've taken the liberty of restructuring it into logical sections (Daily Workflow, Contribution Cycle, History Rewriting, etc.), adding context and warnings to dangerous commands, and ensuring the formatting is clean and consistent.
-
-Here is your new, enhanced `git.md`.
-
----
-
 # Advanced Git & GitHub Cheat Sheet
 
 A personal collection of commands and workflows for maintaining a pristine and efficient Git history.
@@ -27,62 +19,74 @@ This is the standard, pristine process for contributing to any open-source proje
 ### **Phase 1: One-Time Setup (Per Project)**
 
 1.  **Fork the Repository:**
-    *   On the main project's GitHub page (e.g., `https://github.com/owner/project`), click the **"Fork"** button.
+    *   On the original project's GitHub page (e.g., `https://github.com/AllAboutAI-YT/pi-terminal`), click the **"Fork"** button.
 
 2.  **Clone Your Fork Locally:**
+    *   This downloads your personal copy. Replace `<your-username>` with your actual GitHub username.
     ```bash
-    git clone https://github.com/<your-username>/project.git
-    cd project
+    git clone https://github.com/4ndr0666/pi-terminal.git
+    cd pi-terminal
     ```
 
 3.  **Add the Original Repository as "Upstream":**
     *   This is crucial for keeping your fork synced with the original project.
     ```bash
-    git remote add upstream https://github.com/owner/project.git
+    git remote add upstream https://github.com/AllAboutAI-YT/pi-terminal.git
     ```
 
 ### **Phase 2: The Contribution Cycle (For Every Change)**
 
 1.  **Sync Your Fork:**
-    *   Before starting new work, ensure your `main` branch matches the upstream project.
+    *   Before starting new work, ensure your `dev` branch (or `main`, if that's the primary branch) matches the upstream project.
     ```bash
-    git checkout main
-    git pull upstream main
-    git push origin main
+    git checkout dev
+    git pull upstream dev
+    git push origin dev
     ```
 
 2.  **Create a Feature Branch:**
-    *   Never work on `main`. Create a new branch with a descriptive name.
+    *   Never work directly on `dev` (or `main`). Create a new branch with a descriptive name for your changes.
     ```bash
-    git checkout -b feat/add-user-profile-page
+    git checkout -b fix/workspace-dependency-error
     ```
 
 3.  **Make & Commit Changes:**
-    *   After making your code changes, commit them with a clear, conventional message.
+    *   After making your code changes (e.g., in `packages/web/package.json`), commit them with a clear, conventional message.
     ```bash
     git add .
-    git commit -m "feat(profile): add user profile page and API endpoint"
+    git commit -m "fix(install): resolve incorrect workspace dependency in web package"
     ```
 
 4.  **Push to Your Fork:**
+    *   This uploads your committed changes to your personal GitHub fork. The `-u` flag sets the upstream for this specific branch, so subsequent pushes on this branch can just be `git push`.
     ```bash
-    # The -u flag sets the upstream for this branch so you can just `git push` next time.
-    git push -u origin feat/add-user-profile-page
+    git push -u origin fix/workspace-dependency-error
     ```
 
-5.  **Open the Pull Request:**
-    *   Go to the original project's repository on GitHub.
-    *   Click the **"Compare & pull request"** button in the yellow banner.
-    *   Ensure the base repository is the original project and the head repository is your fork.
-    *   Write a clear description using one of the templates below.
+5.  **Open the Pull Request (The Contribution Itself):**
+    *   Go to **your fork's** repository on GitHub (`https://github.com/4ndr0666/pi-terminal`).
+    *   GitHub will display a yellow banner indicating your branch had recent pushes. Click the **"Compare & pull request"** button.
+    *   **Crucially, configure the comparison page correctly:**
+        *   **`base repository` (Destination):** Select the original project: `AllAboutAI-YT/pi-terminal` (it should default to `base: dev`).
+        *   **`head repository` (Source):** Select your fork: `4ndr0666/pi-terminal` (and select your branch `compare: fix/workspace-dependency-error`).
+    *   Write a clear title and description for your pull request (see templates below).
+    *   Click **"Create pull request"**.
 
-6.  **Clean Up After Merging:**
-    *   After your PR is merged, sync your fork again (Step 1) and then delete the old branch.
+6.  **Clean Up After Merging (After Owner Approval):**
+    *   **Only perform these steps *after* the original project owner merges your Pull Request.**
+    *   First, sync your local `dev` branch with the `upstream` (original) `dev` branch, which now contains your merged changes.
     ```bash
-    # Delete the local branch
-    git branch -d feat/add-user-profile-page
-    # Delete the remote branch on your fork
-    git push origin --delete feat/add-user-profile-page
+    git checkout dev
+    git pull upstream dev
+    git push origin dev
+    ```
+    *   Then, delete the local feature branch:
+    ```bash
+    git branch -d fix/workspace-dependency-error
+    ```
+    *   Finally, delete the remote feature branch on your fork:
+    ```bash
+    git push origin --delete fix/workspace-dependency-error
     ```
 
 ### **Pull Request Message Templates**
@@ -90,7 +94,7 @@ This is the standard, pristine process for contributing to any open-source proje
 #### **Bug Fix Template**
 **Title:** `fix(scope): [Brief description of the fix]`
 ```markdown
-**Closes:** #[issue number]
+**Closes:** #[issue number] (if applicable)
 
 ### Description of the Bug
 A clear description of the incorrect behavior and how to reproduce it.
@@ -101,7 +105,7 @@ A clear description of the incorrect behavior and how to reproduce it.
 
 ### How to Test
 1. Check out this branch.
-2. Run `npm install` and `npm run dev`.
+2. Run `bun install` and `bun dev`.
 3. Verify that the previously buggy feature now works as expected.
 ```
 
@@ -118,7 +122,9 @@ A clear description of what this feature adds and why it's valuable.
 
 ### Areas for Feedback
 -   I'm looking for feedback on the UI implementation for mobile devices.
-```---
+```
+
+---
 
 ## 日常 Daily Workflow & Stashing
 
@@ -258,6 +264,7 @@ Useful for finding permission issues in a repository.
 ```bash
 git ls-files -s | awk '$3 ~ /^0*0?$/ {next} $4 ~ /^<path-to-search>\// {print $4}'
 ```
+
 ---
 
 ## 🤖 GitHub CLI & Automation
@@ -292,6 +299,47 @@ GH_TOKEN=$(gh auth token) gh api /user | jq .login
 ---
 
 ## 🔧 Troubleshooting & Special Cases
+
+### **Bun Installation & Monorepo Troubleshooting**
+
+These commands address common issues when setting up projects using Bun, especially in monorepos.
+
+#### **CPU Architecture Mismatch (`illegal hardware instruction`)**
+This error indicates your Bun executable was compiled for a newer CPU architecture than yours.
+
+1.  **Uninstall current Bun:**
+    ```bash
+    sudo pacman -R bun
+    ```
+2.  **Reinstall using the official script:** This detects your CPU's architecture.
+    ```bash
+    curl -fsSL https://bun.sh/install | bash
+    ```
+3.  **Update PATH (as per script's instructions):** Add `export BUN_INSTALL="/home/your_username/.bun"` and `export PATH="$BUN_INSTALL/bin:$PATH"` to your shell config (e.g., `~/.zshrc`).
+4.  **Reload shell or open new terminal.**
+5.  **Verify:** `bun --version`
+
+#### **Workspace Dependency Not Found (`error: Workspace dependency "opencode" not found`)**
+This error usually occurs in monorepos when an internal package refers to another local package by an incorrect or outdated name (e.g., after a fork/rename).
+
+1.  **Identify the problematic `package.json`:** The error message itself usually indicates which package is failing. Based on our session, it was found in `packages/web/package.json`.
+2.  **Navigate to that package's directory:**
+    ```bash
+    cd packages/web
+    ```
+3.  **Edit the `package.json`:** Change the incorrect dependency (e.g., `"opencode": "workspace:*"`) to the correct local package name (e.g., `"ai_redteam": "workspace:*"`).
+4.  **Save the file and return to the project root:** `cd ../..`
+5.  **Perform a clean installation:**
+    ```bash
+    # Remove any partially installed packages
+    rm -rf node_modules
+    # Remove the lockfile (crucial for forcing a fresh dependency resolution)
+    rm -f bun.lock
+    # Clear Bun's global package cache (optional, but good for stubborn issues)
+    bun pm cache rm
+    # Run a fresh installation
+    bun install
+    ```
 
 ### **Restoring Deleted Files**
 1.  **Find the commit where the deletion happened:**
