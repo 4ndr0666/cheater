@@ -16,6 +16,7 @@ mount -o subvol=@/tmp "$(root_partition)" /mnt/tmp
 mount -o subvol=@/usr/local "$(root_partition)" /mnt/usr/local
 mount -o subvol=@/var "$(root_partition)" /mnt/var
 ```
+*Note: `$(root_partition)` is a placeholder for your actual root partition (e.g., `/dev/sdaX`).*
 
 **General Usage**
 
@@ -24,7 +25,11 @@ mount -o subvol=@/var "$(root_partition)" /mnt/var
 ### Prefix
 
 ```bash
-"$(date +%Y-%m-%d_%H${time_delim}%M${time_delim}%S)"
+# Example usage:
+# time_delim="-"
+# echo "$(date +%Y-%m-%d_%H${time_delim}%M${time_delim}%S)"
+# Or a common direct format:
+echo "$(date +%Y-%m-%d_%H:%M:%S)"
 ```
 
 ### Make the Filesystem
@@ -36,13 +41,13 @@ mkfs.btrfs /dev/sdx
 ### Create a Subvolume (subv)
 
 ```bash
-btrfs subv create /mtpt/sdx
+btrfs subvolume create /mtpt/sdx
 ```
 
 ### List The Subvolumes
 
 ```bash
-sudo btrfs subv list /
+sudo btrfs subvolume list /
 ```
 
 ### Check Default Subv
@@ -50,7 +55,7 @@ sudo btrfs subv list /
 ```bash
 sudo btrfs subvolume get-default /path/to/mount/point
 ```
-    *should be subv you're booting from*
+*should be subv you're booting from*
 
 ### Mount Subv
 
@@ -82,10 +87,12 @@ or
 blkid | grep btrfs
 ```
 
-### Resize 
+### Resize
 
 ```bash
-sudo btrfs fi resize <+/-/or total size>115G /mnt/sdx
+sudo btrfs fi resize <+/-SIZE_IN_G_OR_TOTAL_SIZE> /mnt/sdx
+# Example: sudo btrfs fi resize +10G /mnt/sdx
+# Example: sudo btrfs fi resize 115G /mnt/sdx
 ```
 
 ### Delete
@@ -110,10 +117,10 @@ sudo btrfs scrub start /
 sudo btrfs balance start -musage=50 -dusage=50 /
 ```
 
-	*Combine both into an alias*:
+*Combine both into an alias (Note: `watch` will run in foreground):*
 
 ```bash
-alias balance='bash -c "sudo btrfs balance start -musage=60 -dusage=60 / & sudo watch -t -n5 btrfs balance status / &&  fg"'
+alias balance='sudo btrfs balance start -musage=60 -dusage=60 / & PID=$!; sudo watch -t -n5 btrfs balance status /; wait $PID'
 ```
 
 ### Check For Errors
@@ -127,7 +134,7 @@ sudo btrfs check --readonly /dev/sdx
 ```bash
 sudo btrfs check --repair /dev/sdx
 ```
-	*warning: do not use this option if mounting is possible*
+*warning: do not use this option if mounting is possible*
 
 **Snapshots**
 
@@ -141,12 +148,12 @@ sudo btrfs subvolume snapshot -r / "/.snapshots/@root-$(date +%F-%R)"
 
 ### Method 2
 
-With this method you can revert the snapshots by editing fstab 
-and changing the `subvol=2020-01-13` or the corresponding `subvolid` 
-you get from executing a `sudo btrfs subv list /home`.
+With this method you can revert the snapshots by editing fstab
+and changing the `subvol=2020-01-13` or the corresponding `subvolid`
+you get from executing a `sudo btrfs subvolume list /home`.
 
 ```bash
-sudo btrfs subv snapshop /home /home/.snapshots/2020-01-13
+sudo btrfs subvolume snapshot /home /home/.snapshots/2020-01-13
 ```
 
 ### List Snapshots:
@@ -160,7 +167,7 @@ sudo btrfs subvolume list -t snapshot /path/to/mount/point
 ```bash
 sudo btrfs subvolume set-default [snapshot-id] /path/to/mount/point
 ```
-    *ensure to update grub to reflect changes*
+*ensure to update grub to reflect changes*
 
 ```bash
 sudo update-grub
@@ -169,8 +176,8 @@ sudo update-grub
 ### Restore Method 2
 
 ```bash
-sudo btrfs subv delete /home
-sudo btrfs subv snapshot /home/.snapshots/2020-01-13 /home
+sudo btrfs subvolume delete /home
+sudo btrfs subvolume snapshot /home/.snapshots/2020-01-13 /home
 ```
 
 Now restore your fstab and reboot to be back on the /home subv.
@@ -220,4 +227,4 @@ mkdir /mnt/srv
 mkdir /mnt/tmp
 mkdir -p /mnt/usr/local
 mkdir /mnt/var
-```
+``````
