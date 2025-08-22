@@ -1,16 +1,6 @@
 # FFMPEG Cheater
 
-**FFmpeg** is a powerful, open-source command-line tool for converting, manipulating, and streaming audio and video files. It supports a vast array of formats and codecs, making it indispensable for multimedia tasks.
-
----
-
-## 1. Introduction to FFmpeg
-
-FFmpeg is a powerful, open-source command-line tool for converting, manipulating, and streaming audio and video files. It supports a vast array of formats and codecs, making it indispensable for multimedia tasks.
-
----
-
-## 2. Installation
+## 1. Installation
 
 This section provides a comprehensive guide for compiling FFmpeg with support for various modern codecs and hardware acceleration. For simpler installation, consider using your system's package manager (e.g., `sudo apt install ffmpeg` on Debian/Ubuntu, `brew install ffmpeg` on macOS), though a compiled version often includes more features.
 
@@ -69,9 +59,7 @@ hash -r # Refresh shell's command hash
 
 ---
 
-## 3. Original FFmpeg Snippets
-
-This section contains your original FFmpeg commands and headings exactly as they were provided, demonstrating various common tasks. Detailed explanations and expanded usage examples for these and other operations can be found in the subsequent sections.
+## 2. Custom FFmpeg Snippets
 
 ### High Quality
 ```bash
@@ -216,11 +204,11 @@ Where `ss` offset = frame_number / FPS.
 
 ---
 
-## 4. Expanded FFmpeg Usage & Advanced Examples
+## 3. Expanded FFmpeg Usage & Advanced Examples
 
 This section provides more detailed explanations and additional advanced commands, building upon the basic functionalities shown above.
 
-### 4.1 Basic Conversions and Information
+### 3.1 Basic Conversions and Information
 
 #### Quick Format Conversion
 
@@ -240,7 +228,7 @@ ffmpeg -i input.mkv -c copy output.mp4
 ffmpeg -i input.mkv -c:v copy -c:a copy output.mp4 # Explicitly copy video and audio
 ```
 
-### 4.2 Video Encoding & Manipulation
+### 3.2 Video Encoding & Manipulation
 
 #### High-Quality Encoding (H.264 / H.265)
 
@@ -406,7 +394,7 @@ ffmpeg -i input.mov \
 -map "[v]" output_pingpong.mp4
 ```
 
-### 4.3 Image and Frame Manipulation
+### 3.3 Image and Frame Manipulation
 
 #### Create Thumbnails
 
@@ -454,7 +442,7 @@ Generate a single image mosaic from video frames (e.g., every Nth frame or based
     ffmpeg -i input.webm -vf "select=gt(scene\,0.4),scale=854:480,tile" -frames:v 1 preview_scene_change.png
     ```
 
-### 4.4 Audio Manipulation
+### 3.4 Audio Manipulation
 
 #### Remove Audio from Video (Mute)
 
@@ -480,7 +468,7 @@ Combine a separate audio file with a video file.
 ffmpeg -i video.mp4 -i audio.opus -c:v copy -c:a aac -strict experimental output_with_audio.mp4
 ```
 
-### 4.5 Streaming and Capture
+### 3.5 Streaming and Capture
 
 #### Download M3U8 Stream
 
@@ -517,7 +505,7 @@ ffmpeg -f alsa -ac 2 -i hw:0,0 -f x11grab -framerate 30 -video_size 1280x720 \
 -f flv rtmp://live.twitch.tv/app/<stream_key>
 ```
 
-### 4.6 Advanced Filters & Specific Use Cases
+### 3.6 Advanced Filters & Specific Use Cases
 
 #### Reduce Video Filesize
 
@@ -556,7 +544,7 @@ ffmpeg -i file.mkv -vf "zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,
 ```
 [Detailed Guide for HDR to SDR Conversion](https://stevens.li/guides/video/converting-hdr-to-sdr-with-ffmpeg/)
 
-### 4.7 Metadata
+### 3.7 Metadata
 
 #### Change Video Metadata Title
 
@@ -570,7 +558,7 @@ To remove all existing metadata and then add a title:
 ffmpeg -i in.mp4 -map_metadata -1 -metadata title="My New Title" -c:v copy -c:a copy out.mp4
 ```
 
-### 4.8 Utilities and Best Practices
+### 3.8 Utilities and Best Practices
 
 #### Encode Multiple Files (Batch Processing)
 
@@ -598,7 +586,7 @@ Where `ss` offset = frame_number / FPS.
 
 ---
 
-## 5. References
+## 4. References
 
 *   [Official FFmpeg Documentation](https://ffmpeg.org/documentation.html)
 *   [FFmpeg H.264 Encoding Guide](https://trac.ffmpeg.org/wiki/Encode/H.264)
