@@ -1,4 +1,4 @@
-# Cron Cheat-Sheet
+# Cron Cheater
 
 `cron` is a time-based job scheduler in Unix-like operating systems. Users who set up and maintain software environments use `cron` to schedule jobs (commands or shell scripts) to run periodically at fixed times, dates, or intervals.
 
@@ -51,55 +51,55 @@ The `crontab` command is used to create, view, and modify your personal cron job
 
 ---
 
-## 3. Self-Explanatory Cron Syntax Examples
+## 3. Self-explanatory crontab syntax examples:
 
-These examples illustrate various time-based schedules for a simple `echo` command.
+Your original list of self-explanatory cron job examples is preserved below.
 
-*   **Every day at 4:30 AM:**
+*   Every day at 4:30 AM:
     ```cron
     30 4 * * * echo "It is now 4:30 am."
     ```
-*   **Every day at 10:00 PM:**
+*   Every day at 10:00 PM:
     ```cron
     0 22 * * * echo "It is now 10 pm."
     ```
-*   **At 3:30 PM on December 25th (Christmas Day), every year:**
+*   At 3:30 PM on December 25th (Christmas Day), every year:
     ```cron
     30 15 25 12 * echo "It is 3:30pm on Christmas Day."
     ```
-*   **At 3:30 AM every day:**
+*   At 3:30 AM every day:
     ```cron
     30 3 * * * echo "Remind me that it's 3:30am every day."
     ```
-*   **At the start of every hour (e.g., 1:00, 2:00, 3:00, etc.):**
+*   At the start of every hour (e.g., 1:00, 2:00, 3:00, etc.):
     ```cron
     0 * * * * echo "It is the start of a new hour."
     ```
-*   **At 6:00 AM on the 1st and 15th of every month:**
+*   At 6:00 AM on the 1st and 15th of every month:
     ```cron
     0 6 1,15 * * echo "At 6am on the 1st and 15th of every month."
     ```
-*   **At 6:00 AM on Tuesday, Wednesday, and Friday:**
+*   At 6:00 AM on Tuesday, Wednesday, and Friday:
     ```cron
     0 6 * * 2,3,5 echo "At 6am on Tuesday, Wednesday and Friday."
     ```
-*   **Just before midnight (11:59 PM) on weekdays (Monday-Friday):**
+*   Just before midnight (11:59 PM) on weekdays (Monday-Friday):
     ```cron
     59 23 * * 1-5 echo "Just before midnight on weekdays."
     ```
-*   **Every two hours (e.g., 0:00, 2:00, 4:00, etc.):**
+*   Every two hours (e.g., 0:00, 2:00, 4:00, etc.):
     ```cron
     0 */2 * * * echo "Every two hours."
     ```
-*   **At 8:00 PM on Thursday:**
+*   At 8:00 PM on Thursday:
     ```cron
     0 20 * * 4 echo "8pm on a Thursday."
     ```
-*   **At 8:00 PM on Thursday (using day name):**
+*   At 8:00 PM on Thursday (using day name):
     ```cron
     0 20 * * Thu echo "8pm on a Thursday."
     ```
-*   **Every 15 minutes from 9:00 AM to 5:00 PM on weekdays (Tuesday-Friday):**
+*   Every 15 minutes from 9:00 AM to 5:00 PM on weekdays (Tuesday-Friday):
     ```cron
     */15 9-17 * * 2-5 echo "Every 15 minutes from 9am-5pm on weekdays."
     ```
@@ -163,4 +163,3 @@ Cron jobs run in a minimal environment. It's crucial to set up the necessary env
 *   **Separate Scripts**: For complex tasks, write a shell script and call it from `cron`. This makes debugging easier.
 *   **Permissions**: Ensure your scripts have execute permissions (`chmod +x script.sh`).
 *   **Comments**: Use `#` to add comments in your crontab file to explain complex jobs.
-```
