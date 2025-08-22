@@ -19,7 +19,7 @@ else
     BUG()  { printf '[ERR] %s\n' "$*"; }
     INFO() { printf '[..] %s\n' "$*"; }
 fi
-````
+```
 
 ---
 
@@ -287,7 +287,7 @@ main() {
 
         if ! validate_input "$command"; then
             continue
-        fi
+        }
 
         case "$command" in
             1) visual_feedback "" ;;
@@ -402,3 +402,4 @@ fi)'
 
 git config --global alias.lg "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%C(bold blue)<%an>%Creset' --abbrev-commit"
 ```
+``````
