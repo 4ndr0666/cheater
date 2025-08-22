@@ -1,15 +1,43 @@
-# PkgFile Cheat-Sheet
+# PkgFile.md
 
 **`pkgfile`** is a command-line utility for Arch Linux that allows you to quickly find which package owns a specific file or command without needing to have the package installed. It operates on a local database of files provided by all packages in the Arch Linux repositories.
 
-It's primarily used for:
+---
+
+## 1. Original `pkgfile` Snippets
+
+This section contains your original `pkgfile` commands and headings exactly as they were provided. Detailed explanations and expanded usage examples for these and other operations can be found in the subsequent sections.
+
+## `pkgfile` commands:
+
+### Search for package
+```bash
+pkgfile <filename_or_command>
+```
+
+### Update the `pkgfile` database
+```bash
+sudo pkgfile -u
+```
+
+### List all files provided by a package
+```bash
+pkgfile -l <package_name>```
+
+---
+
+## 2. Expanded `pkgfile` Guide
+
+This section provides a more structured and comprehensive guide to `pkgfile`, building upon your original snippets and introducing additional functionalities.
+
+### 2.1 Introduction to `pkgfile`
+
+`pkgfile` is primarily used for:
 *   **Finding missing commands**: If you try to run a command and get "command not found", `pkgfile` can tell you which package provides it.
 *   **Identifying file origins**: Determine which package installed a particular file on your system.
 *   **Exploring package contents**: List all files included in a given package.
 
----
-
-## 1. Installation
+### 2.2 Installation
 
 `pkgfile` is available in the official Arch Linux repositories.
 
@@ -17,28 +45,30 @@ It's primarily used for:
 sudo pacman -S pkgfile
 ```
 
----
-
-## 2. Database Management
+### 2.3 Database Management
 
 `pkgfile` relies on a local database of file listings from all repository packages. This database needs to be updated regularly.
 
-*   **Update the `pkgfile` database**:
+*   **Update the `pkgfile` database**: Your original command is included below.
     ```bash
-    sudo pkgfile --update
+    sudo pkgfile -u
     ```
     *   **Explanation**: This command downloads updated file lists from all enabled repositories (as configured in `pacman.conf`) and rebuilds `pkgfile`'s local database. It's crucial to run this after `pacman -Syu` or if you encounter outdated results.
+*   **Automatic database updates (recommended)**:
+    ```bash
+    sudo systemctl enable pkgfile-update.timer
+    sudo systemctl start pkgfile-update.timer
+    ```
+    *   **Explanation**: This sets up a systemd timer to regularly update `pkgfile`'s database in the background.
 *   **Force a full database rebuild**:
     ```bash
     sudo pkgfile --files
     ```
     *   **Explanation**: This command forces `pkgfile` to re-read all package file lists from the `pacman` cache and rebuild its database from scratch. Useful if the database becomes corrupted or inconsistent.
 
----
+### 2.4 Searching for Files or Commands
 
-## 3. Searching for Files or Commands
-
-The primary function of `pkgfile` is to search for files or commands.
+The primary function of `pkgfile` is to search for files or commands. Your original search command is included below.
 
 *   **Search for a file or command name**:
     ```bash
@@ -66,7 +96,8 @@ The primary function of `pkgfile` is to search for files or commands.
     pkgfile --ignore-case <filename_or_command>
     # Shorter form:
     pkgfile -i <filename_or_command>
-    ```    *   **Example**:
+    ```
+    *   **Example**:
         ```bash
         pkgfile -i SSHD
         # Output: core/openssh
@@ -85,31 +116,13 @@ The primary function of `pkgfile` is to search for files or commands.
         # Output: extra/firefox  usr/share/applications/firefox.desktop
         ```
 
-*   **Search case-insensitively for a substring**:
-    ```bash
-    pkgfile -s --ignore-case <pattern>
-    # Shorter form:
-    pkgfile -si <pattern>
-    ```
-    *   **Example**:
-        ```bash
-        pkgfile -si "libcuda"
-        # Output: extra/nvidia-utils  usr/lib/libcuda.so
-        #         extra/nvidia-utils  usr/lib/libcuda.so.1
-        #         ...
-        ```
+### 2.5 Listing Package Contents
 
----
-
-## 4. Listing Package Contents
-
-You can use `pkgfile` to list all files contained within a specific package, similar to `pacman -Ql <pkgname>`.
+You can use `pkgfile` to list all files contained within a specific package, similar to `pacman -Ql <pkgname>`. Your original command is included below.
 
 *   **List all files belonging to a package**:
     ```bash
-    pkgfile --list <pkgname>
-    # Shorter form:
-    pkgfile -l <pkgname>
+    pkgfile -l <package_name>
     ```
     *   **Example**:
         ```bash
@@ -134,9 +147,7 @@ You can use `pkgfile` to list all files contained within a specific package, sim
         #         ...
         ```
 
----
-
-## 5. Advanced Options & Tips
+### 2.6 Advanced Options & Tips
 
 *   **Verbose Output**:
     ```bash
