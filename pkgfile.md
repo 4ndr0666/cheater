@@ -4,6 +4,10 @@
 
 ---
 
+## 1. Original `pkgfile` Snippets
+
+This section contains your original `pkgfile` commands and headings exactly as they were provided. Detailed explanations and expanded usage examples for these and other operations can be found in the subsequent sections.
+
 ## `pkgfile` commands:
 
 ### Search for package
@@ -22,18 +26,18 @@ pkgfile -l <package_name>```
 
 ---
 
-## 1. Expanded `pkgfile` Guide
+## 2. Expanded `pkgfile` Guide
 
 This section provides a more structured and comprehensive guide to `pkgfile`, building upon your original snippets and introducing additional functionalities.
 
-### 1.1 Introduction to `pkgfile`
+### 2.1 Introduction to `pkgfile`
 
 `pkgfile` is primarily used for:
 *   **Finding missing commands**: If you try to run a command and get "command not found", `pkgfile` can tell you which package provides it.
 *   **Identifying file origins**: Determine which package installed a particular file on your system.
 *   **Exploring package contents**: List all files included in a given package.
 
-### 1.2 Installation
+### 2.2 Installation
 
 `pkgfile` is available in the official Arch Linux repositories.
 
@@ -41,7 +45,7 @@ This section provides a more structured and comprehensive guide to `pkgfile`, bu
 sudo pacman -S pkgfile
 ```
 
-### 1.3 Database Management
+### 2.3 Database Management
 
 `pkgfile` relies on a local database of file listings from all repository packages. This database needs to be updated regularly.
 
@@ -62,7 +66,7 @@ sudo pacman -S pkgfile
     ```
     *   **Explanation**: This command forces `pkgfile` to re-read all package file lists from the `pacman` cache and rebuild its database from scratch. Useful if the database becomes corrupted or inconsistent.
 
-### 1.4 Searching for Files or Commands
+### 2.4 Searching for Files or Commands
 
 The primary function of `pkgfile` is to search for files or commands. Your original search command is included below.
 
@@ -112,7 +116,7 @@ The primary function of `pkgfile` is to search for files or commands. Your origi
         # Output: extra/firefox  usr/share/applications/firefox.desktop
         ```
 
-### 1.5 Listing Package Contents
+### 2.5 Listing Package Contents
 
 You can use `pkgfile` to list all files contained within a specific package, similar to `pacman -Ql <pkgname>`. Your original command is included below.
 
@@ -143,7 +147,7 @@ You can use `pkgfile` to list all files contained within a specific package, sim
         #         ...
         ```
 
-### 1.6 Advanced Options & Tips
+### 2.6 Advanced Options & Tips
 
 *   **Verbose Output**:
     ```bash
