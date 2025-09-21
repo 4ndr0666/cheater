@@ -6,9 +6,10 @@ A personal collection of commands and workflows for maintaining a pristine and e
 1. [The Core Contribution Workflow](#-the-core-contribution-workflow)
 2. [Daily Workflow & Stashing](#-daily-workflow--stashing)
 3. [History Rewriting (Dangerous Operations)](#-history-rewriting-dangerous-operations)
-4. [Advanced Inspection & Searching](#-advanced-inspection--searching)
-5. [GitHub CLI & Automation](#-github-cli--automation)
-6. [Troubleshooting & Special Cases](#-troubleshooting--special-cases)
+4. [Recovering From Mistakes](#-recovering-from-mistakes)
+5. [Advanced Inspection & Searching](#-advanced-inspection--searching)
+6. [GitHub CLI & Automation](#-github-cli--automation)
+7. [Troubleshooting & Special Cases](#-troubleshooting--special-cases)
 
 ---
 
@@ -19,110 +20,67 @@ This is the standard, pristine process for contributing to any open-source proje
 ### **Phase 1: One-Time Setup (Per Project)**
 
 1.  **Fork the Repository:**
-    *   On the original project's GitHub page (e.g., `https://github.com/AllAboutAI-YT/pi-terminal`), click the **"Fork"** button.
+    *   On the original project's GitHub page, click the **"Fork"** button.
 
 2.  **Clone Your Fork Locally:**
-    *   This downloads your personal copy. Replace `<your-username>` with your actual GitHub username.
+    *   This downloads your personal copy.
     ```bash
-    git clone https://github.com/4ndr0666/pi-terminal.git
-    cd pi-terminal
+    git clone https://github.com/<your-username>/<project-name>.git
+    cd <project-name>
     ```
 
 3.  **Add the Original Repository as "Upstream":**
     *   This is crucial for keeping your fork synced with the original project.
     ```bash
-    git remote add upstream https://github.com/AllAboutAI-YT/pi-terminal.git
+    git remote add upstream https://github.com/<original-owner>/<project-name>.git
     ```
 
 ### **Phase 2: The Contribution Cycle (For Every Change)**
 
 1.  **Sync Your Fork:**
-    *   Before starting new work, ensure your `dev` branch (or `main`, if that's the primary branch) matches the upstream project.
+    *   Before starting new work, ensure your primary branch (`main` or `dev`) matches the upstream project.
     ```bash
-    git checkout dev
-    git pull upstream dev
-    git push origin dev
+    git checkout main
+    git pull upstream main
+    git push origin main
     ```
 
 2.  **Create a Feature Branch:**
-    *   Never work directly on `dev` (or `main`). Create a new branch with a descriptive name for your changes.
+    *   Never work directly on `main`. Create a new branch with a descriptive name.
     ```bash
-    git checkout -b fix/workspace-dependency-error
+    git checkout -b feat/add-user-authentication
     ```
 
 3.  **Make & Commit Changes:**
-    *   After making your code changes (e.g., in `packages/web/package.json`), commit them with a clear, conventional message.
+    *   Commit your changes with a clear, conventional message.
     ```bash
     git add .
-    git commit -m "fix(install): resolve incorrect workspace dependency in web package"
+    git commit -m "feat(auth): implement user login endpoint"
     ```
 
 4.  **Push to Your Fork:**
-    *   This uploads your committed changes to your personal GitHub fork. The `-u` flag sets the upstream for this specific branch, so subsequent pushes on this branch can just be `git push`.
+    *   The `-u` flag sets the upstream for this branch, so subsequent pushes can just be `git push`.
     ```bash
-    git push -u origin fix/workspace-dependency-error
+    git push -u origin feat/add-user-authentication
     ```
 
-5.  **Open the Pull Request (The Contribution Itself):**
-    *   Go to **your fork's** repository on GitHub (`https://github.com/4ndr0666/pi-terminal`).
-    *   GitHub will display a yellow banner indicating your branch had recent pushes. Click the **"Compare & pull request"** button.
-    *   **Crucially, configure the comparison page correctly:**
-        *   **`base repository` (Destination):** Select the original project: `AllAboutAI-YT/pi-terminal` (it should default to `base: dev`).
-        *   **`head repository` (Source):** Select your fork: `4ndr0666/pi-terminal` (and select your branch `compare: fix/workspace-dependency-error`).
-    *   Write a clear title and description for your pull request (see templates below).
-    *   Click **"Create pull request"**.
+5.  **Open the Pull Request:**
+    *   Go to your fork's repository on GitHub.
+    *   Click the **"Compare & pull request"** button.
+    *   Ensure the base repository is the original project and the head repository is your fork.
+    *   Write a clear title and description.
 
-6.  **Clean Up After Merging (After Owner Approval):**
-    *   **Only perform these steps *after* the original project owner merges your Pull Request.**
-    *   First, sync your local `dev` branch with the `upstream` (original) `dev` branch, which now contains your merged changes.
+6.  **Clean Up After Merging:**
+    *   **After** the project owner merges your PR, sync your local `main` again.
     ```bash
-    git checkout dev
-    git pull upstream dev
-    git push origin dev
+    git checkout main
+    git pull upstream main
     ```
-    *   Then, delete the local feature branch:
+    *   Then, delete the local and remote feature branches.
     ```bash
-    git branch -d fix/workspace-dependency-error
+    git branch -d feat/add-user-authentication
+    git push origin --delete feat/add-user-authentication
     ```
-    *   Finally, delete the remote feature branch on your fork:
-    ```bash
-    git push origin --delete fix/workspace-dependency-error
-    ```
-
-### **Pull Request Message Templates**
-
-#### **Bug Fix Template**
-**Title:** `fix(scope): [Brief description of the fix]`
-```markdown
-**Closes:** #[issue number] (if applicable)
-
-### Description of the Bug
-A clear description of the incorrect behavior and how to reproduce it.
-
-### Changes Made
--   Bulleted list explaining *what* was changed and *why*.
--   Example: "Corrected the API endpoint URL in `src/api.js` to prevent 404 errors."
-
-### How to Test
-1. Check out this branch.
-2. Run `bun install` and `bun dev`.
-3. Verify that the previously buggy feature now works as expected.
-```
-
-#### **New Feature Template**
-**Title:** `feat(scope): [Brief description of the feature]`
-```markdown
-### Description of the Feature
-A clear description of what this feature adds and why it's valuable.
-
-### Key Changes
--   **Added new component:** `UserProfile.jsx`
--   **Created new API endpoint:** `/api/user/:id`
--   **Updated main layout** to include a link to the profile page.
-
-### Areas for Feedback
--   I'm looking for feedback on the UI implementation for mobile devices.
-```
 
 ---
 
@@ -132,108 +90,140 @@ Commands for everyday use and managing local changes.
 
 ### **Pulling Updates with Local Changes (The Safe Way)**
 
-1.  **Stash All Local Changes (Tracked, Untracked, and Staged):**
-    *   This saves your work in a temporary, safe place.
+1.  **Stash Your Work:**
+    *   Saves all changes (tracked, untracked, and staged) in a temporary, safe place.
     ```shell
     git stash push -u -m "WIP: Refactoring the user service"
     ```
 
-2.  **Pull and Rebase the Upstream Branch:**
+2.  **Pull and Rebase:**
     *   Fetches remote changes and places your local commits cleanly on top.
     ```shell
     git pull --rebase
     ```
 
-3.  **Re-apply Your Stashed Changes:**
-    *   Restores your work exactly as it was, including staged files.
+3.  **Re-apply Your Stash:**
+    *   Restores your work exactly as it was.
     ```shell
     git stash pop --index
     ```
 
-4.  **Resolve Conflicts and Push:**
-    *   If there are conflicts during the rebase, fix them, then:
-    ```shell
-    git add <fixed-files>
-    git rebase --continue
-    ```
-    *   Once everything is clean, commit and push your work.
-
-### **Useful Git Configs for Stashing and Rebasing**
+### **Useful Git Configs**
 
 ```shell
-# Always include untracked files in `git stash` by default
+# Always include untracked files in `git stash`
 git config --global stash.saveIncludeUntracked true
 
 # Automatically stash and re-apply changes during a rebase/pull
 git config --global rebase.autoStash true
 ```
 
-### **Managing Stashes**
-
-```shell
-# See what’s in a specific stash, including file diffs and untracked files
-git stash show -p -u stash@{0}
-
-# Name your stashes for better organization
-git stash push -u -m "fix-menu-layout"
-```
-
 ---
 
 ## ⚠️ History Rewriting (Dangerous Operations)
 
-**WARNING:** These commands rewrite public history. They can be destructive. Use with extreme caution and communicate with your team before using them on shared branches.
+**WARNING:** These commands rewrite public history. Use with extreme caution and communicate with your team before using them on shared branches.
 
-### **Removing Large/Sensitive Files with BFG Repo-Cleaner**
-
-BFG is the best tool for removing unwanted data like large files or credentials from your entire repository history.
-
-**1. Prepare the Repository:**
-   *   Clone a fresh, bare copy of your repository. This is where the cleaning will happen.
-   ```bash
-   git clone --bare https://github.com/owner/project.git
-   cd project.git
-   ```
-
-**2. Run BFG:**
-   *   Download `bfg.jar` from the official site.
-   *   This command removes the specified file(s) from every commit in your history.
-   ```bash
-   # Replace 'credentials.json' with the file to delete
-   java -jar /path/to/bfg.jar --delete-files 'credentials.json'
-   ```
-
-**3. Clean the Repository:**
-   *   After BFG runs, finalize the cleaning process.
-   ```bash
-   git reflog expire --expire=now --all
-   git gc --prune=now --aggressive
-   ```
-
-**4. Force-Push the Cleaned History:**
-   *   This overwrites the remote repository's history with your cleaned version. **This is the most dangerous step.**
-   ```bash
-   git push origin --force --all
-   git push origin --force --tags
-   ```
-
-### **Interactive Rebase (Cleaning Your Commits)**
+### **Interactive Rebase (`git rebase -i`)**
 Use this to edit, squash, or reword commits on your feature branch *before* creating a pull request.
 
 1.  **Start the Interactive Rebase:**
-    *   This opens an editor with a list of all commits on your branch since it diverged from `main`.
+    *   This opens an editor with a list of commits since your branch diverged from `main`.
     ```bash
     git rebase -i main
     ```
 
 2.  **Edit the Commit List:**
-    *   In the editor, change `pick` to `squash` (to combine with the previous commit), `reword` (to change the message), or `edit` (to change the content). Save and close the editor.
+    *   In the editor, change `pick` to `squash` (to combine), `reword` (to change the message), or `edit` (to change content).
 
 3.  **Force-Push the Cleaned Branch:**
     *   Because you've rewritten history, you must force-push to your feature branch.
     ```bash
     git push origin your-feature-branch --force
     ```
+
+### **Removing Large/Sensitive Files with BFG Repo-Cleaner**
+BFG is the best tool for removing unwanted data from your entire repository history.
+
+1.  **Prepare:** Clone a fresh, bare copy of your repository.
+    ```bash
+    git clone --bare https://github.com/owner/project.git
+    cd project.git
+    ```
+2.  **Run BFG:** (Download `bfg.jar` first)
+    ```bash
+    java -jar /path/to/bfg.jar --delete-files 'credentials.json'
+    ```
+3.  **Clean and Force-Push:** **This is the most dangerous step.**
+    ```bash
+    git reflog expire --expire=now --all
+    git gc --prune=now --aggressive
+    git push origin --force --all
+    git push origin --force --tags
+    ```
+
+---
+
+## 🚑 Recovering From Mistakes
+
+A step-by-step guide to fix common "oh no" moments.
+
+### **The "I Accidentally Deleted Everything" Playbook**
+
+You've accidentally deleted files, committed the deletion, and pushed it. Your branch is now pointing to a bad snapshot. This guide will help you find the last good snapshot and restore it.
+
+**The Strategy:** `reflog` -> `reset` -> `force push`
+
+1.  **Find Your Last Known Good State with `git reflog`**
+    *   **What it is:** The "reference log" is your personal safety net. It records almost every action you take (commits, checkouts, resets).
+    *   **Action:** Run it immediately when you realize you're lost.
+    ```bash
+    git reflog
+    ```
+    *   **Goal:** Scan the output for the commit message right before things went wrong. Look for the commit hash (the 7-character code on the left, e.g., `a92b46d`). A good commit message here is a lifesaver.
+
+2.  **(Optional but Recommended) Verify with `git checkout`**
+    *   **What it is:** A way to time-travel to any commit to inspect it without making permanent changes.
+    *   **Action:**
+    ```bash
+    # Replace <hash> with the promising commit hash you found
+    git checkout <hash>
+    ```
+    *   **Goal:** Look at your files. Do they look right? If yes, you've found your recovery point. Return to your broken branch (`git checkout your-branch-name`) before the next step.
+
+3.  **Reset Your Branch with `git reset --hard`**
+    *   **What it is:** The command that fixes your local branch. It moves your branch's pointer to a specific commit and forcefully resets all your files to match that commit.
+    *   **Action:**
+    ```bash
+    # Make sure you are on the branch you want to fix!
+    git checkout your-broken-branch-name
+
+    # This rewrites your local branch's history
+    git reset --hard <the-good-commit-hash>
+    ```
+    *   **Goal:** Your local branch is now fixed and points to the correct, working snapshot.
+
+4.  **Update the Remote with `git push --force`**
+    *   **What it is:** A command to make the remote branch match your newly fixed local branch.
+    *   **Action:**
+    ```bash
+    git push origin your-broken-branch-name --force
+    ```
+    *   **Goal:** Overwrite the bad history on the remote repository. Use this with care, but it's the correct tool when you are fixing your own mistake on a branch you control.
+
+### **Restoring a Single Deleted File**
+
+1.  **Find the commit where the deletion happened:**
+    ```bash
+    git log --diff-filter=D --summary
+    ```
+2.  **Find the parent commit** (the one *before* the deletion). Copy its hash.
+3.  **Checkout the deleted file from that parent commit:**
+    ```bash
+    # git checkout <parent-commit-hash> -- <path/to/deleted/file>
+    git checkout a1b2c3d4 -- src/important-file.js
+    ```
+4.  Commit the restored file.
 
 ---
 
@@ -242,27 +232,20 @@ Use this to edit, squash, or reword commits on your feature branch *before* crea
 ### **Searching Through History**
 
 ```bash
-# Search the entire repo's history for a string (e.g., a private key)
-git grep "private_key" $(git rev-list --all)
+# Search the entire repo's history for a string
+git grep "my_secret_api_key" $(git rev-list --all)
 
-# Search the entire repo's history for a specific filename
-git rev-list --all | xargs git grep "credentials.json"
+# Find commits where a specific string was added or removed
+git log -S "function_name" --source --all
 ```
 
 ### **Finding Large Files**
-Quickly scan for blobs over 90MB.
+Quickly scan for blobs over a certain size (e.g., 90MB).
 
 ```bash
 git rev-list --objects --all | \
   git cat-file --batch-check='%(objectname) %(objecttype) %(objectsize) %(rest)' | \
   awk '$3 > 90000000 {printf "%.2f MB\t%s\n", $3/1048576, $4}'
-```
-
-### **List All Root-Owned Files**
-Useful for finding permission issues in a repository.
-
-```bash
-git ls-files -s | awk '$3 ~ /^0*0?$/ {next} $4 ~ /^<path-to-search>\// {print $4}'
 ```
 
 ---
@@ -282,77 +265,16 @@ Refresh your `gh` token with additional permissions.
 gh auth refresh -s workflow,read:gpg_key,admin:public_key
 ```
 
-### **Get User Info via API**
-Quickly get user details using your stored `gh` token.
-```bash
-GH_TOKEN=$(gh auth token) gh api /user | jq .login
-```
-
-### **Automated Changelog Generation (Commitizen)**
-`cz-cli` helps enforce conventional commit messages and automates changelog generation.
-*   **More Info:** [Commitizen GitHub](https://github.com/commitizen/cz-cli)
-*   **Installation:**
-    ```bash
-    npm install -g commitizen
-    ```
-
 ---
 
 ## 🔧 Troubleshooting & Special Cases
 
-### **Bun Installation & Monorepo Troubleshooting**
+### **Bun Installation & Monorepo Issues**
 
-These commands address common issues when setting up projects using Bun, especially in monorepos.
+Common fixes for projects using Bun, especially in monorepos.
 
-#### **CPU Architecture Mismatch (`illegal hardware instruction`)**
-This error indicates your Bun executable was compiled for a newer CPU architecture than yours.
-
-1.  **Uninstall current Bun:**
-    ```bash
-    sudo pacman -R bun
-    ```
-2.  **Reinstall using the official script:** This detects your CPU's architecture.
-    ```bash
-    curl -fsSL https://bun.sh/install | bash
-    ```
-3.  **Update PATH (as per script's instructions):** Add `export BUN_INSTALL="/home/your_username/.bun"` and `export PATH="$BUN_INSTALL/bin:$PATH"` to your shell config (e.g., `~/.zshrc`).
-4.  **Reload shell or open new terminal.**
-5.  **Verify:** `bun --version`
-
-#### **Workspace Dependency Not Found (`error: Workspace dependency "opencode" not found`)**
-This error usually occurs in monorepos when an internal package refers to another local package by an incorrect or outdated name (e.g., after a fork/rename).
-
-1.  **Identify the problematic `package.json`:** The error message itself usually indicates which package is failing. Based on our session, it was found in `packages/web/package.json`.
-2.  **Navigate to that package's directory:**
-    ```bash
-    cd packages/web
-    ```
-3.  **Edit the `package.json`:** Change the incorrect dependency (e.g., `"opencode": "workspace:*"`) to the correct local package name (e.g., `"ai_redteam": "workspace:*"`).
-4.  **Save the file and return to the project root:** `cd ../..`
-5.  **Perform a clean installation:**
-    ```bash
-    # Remove any partially installed packages
-    rm -rf node_modules
-    # Remove the lockfile (crucial for forcing a fresh dependency resolution)
-    rm -f bun.lock
-    # Clear Bun's global package cache (optional, but good for stubborn issues)
-    bun pm cache rm
-    # Run a fresh installation
-    bun install
-    ```
-
-### **Restoring Deleted Files**
-1.  **Find the commit where the deletion happened:**
-    ```bash
-    git log --diff-filter=D --summary
-    ```
-2.  **Find the parent commit** (the one *before* the deletion). Copy its hash.
-3.  **Checkout the deleted file from that parent commit:**
-    ```bash
-    # git checkout <parent-commit-hash> -- <path/to/deleted/file>
-    git checkout a1b2c3d4 -- src/important-file.js
-    ```
-4.  Commit the restored file.
+*   **`illegal hardware instruction`:** Your Bun executable was compiled for a different CPU. Reinstall with `curl -fsSL https://bun.sh/install | bash`.
+*   **`error: Workspace dependency not found`:** An internal package has an incorrect name in another package's `package.json`. Correct the name, then run a clean install: `rm -rf node_modules bun.lock && bun install`.
 
 ### **Git LFS (Large File Storage)**
 
@@ -360,20 +282,12 @@ This error usually occurs in monorepos when an internal package refers to anothe
 # List all files currently tracked by LFS
 git lfs ls-files
 
-# Start tracking a new file type
+# Start tracking a new file type and add the attributes file
 git lfs track "*.psd"
-
-# Stop tracking a file type (does not remove from history)
-git lfs untrack "*.zip"
-
-# Add the .gitattributes file to track changes
 git add .gitattributes
 
-# Clean up old, unreferenced LFS files from your local .git directory
+# Clean up old, unreferenced LFS files locally
 git lfs prune
-
-# Push all LFS objects to the remote
-git lfs push --all origin
 ```
 
 ### **Reconnect a Local Directory to a Remote Repo**
