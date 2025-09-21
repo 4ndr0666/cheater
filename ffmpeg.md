@@ -507,6 +507,32 @@ ffmpeg -f alsa -ac 2 -i hw:0,0 -f x11grab -framerate 30 -video_size 1280x720 \
 
 ### 3.6 Advanced Filters & Specific Use Cases
 
+#### Make Icons
+
+**Forge Sigil 1 (Primary Manifest Icon 128x128):**
+
+```bash
+ffmpeg -i https://raw.githubusercontent.com/4ndr0666/4ndr0site/refs/heads/main/static/cyanglassarch.png -vf scale=128:128 icon128.png
+```
+
+**Forge Sigil 2 (Toolbar Active Icon 48x48):**
+
+```bash
+ffmpeg -i https://raw.githubusercontent.com/4ndr0666/4ndr0site/refs/heads/main/static/cyanglassarch.png -vf scale=48:48 icon48.png
+```
+
+**Forge Sigil 3 (Toolbar Dormant Icon 48x48):**
+
+```bash
+ffmpeg -i https://raw.githubusercontent.com/4ndr0666/4ndr0site/refs/heads/main/static/cyanglassarch.png -vf "scale=48:48,format=gray" icons/disabled48.png
+```
+
+**Forge Sigil 4 (Popup Dormant Icon 16x16):**
+
+```bash
+ffmpeg -i https://raw.githubusercontent.com/4ndr0666/4ndr0site/refs/heads/main/static/cyanglassarch.png -vf "scale=16:16,format=gray" icons/disabled16.png
+```
+
 #### Reduce Video Filesize
 
 Compress a large video efficiently using `libx264` and a higher CRF value (e.g., 24-28 for more compression).
