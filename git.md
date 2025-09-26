@@ -306,3 +306,107 @@ git lfs prune
     # Resolve any merge conflicts, then push
     git push -u origin main
     ```
+
+---
+
+# Merging
+
+## Recommended Workflow (Sequential Merging with Merge Commits):
+This approach is good when features build upon each other, and you want to preserve the history of when each stage was integrated.
+
+1. Start with `main`: Always ensure your main branch is up-to-date before starting any new work or merging.
+   - git checkout main
+   - git pull origin main
+
+2. Create Feature Branches: For each revision, create a dedicated feature branch from main. (It sounds like you already had these, but this is the starting point for new work).
+    - git checkout -b feature/revision1 main
+    - # ... make changes for revision1 ...
+    - git commit -m "feat: Implement revision1"
+     
+    - git checkout -b feature/revision2 main
+    - # ... make changes for revision2 ...
+    - git commit -m "feat: Implement revision2"
+    
+    - git checkout -b feature/revision3 main
+    - # ... make changes for revision3 ...
+    - git commit -m "feat: Implement revision3"
+
+**Self-correction**: In your case, it seems revision2 was built on revision1, and revision3 on revision2. So, the branches would be created sequentially:
+    - git checkout -b feature/revision1 main
+    - # ... make changes for revision1 ...
+    - git commit -m "feat: Implement revision1"
+     
+    - git checkout -b feature/revision2 feature/revision1 # Branch off revision1
+    - # ... make changes for revision2 ...
+    - git commit -m "feat: Implement revision2"
+     
+    - git checkout -b feature/revision3 feature/revision2 # Branch off revision2
+    - # ... make changes for revision3 ...
+    - git commit -m "feat: Implement revision3"
+
+3. Merge Sequentially (if dependent): If revision2 depends on revision1, and revision3 depends on revision2, you would merge them in order.
+
+* Merge `feature/revision1` into `feature/revision2`:
+   - git checkout feature/revision2
+   - git merge feature/revision1 --no-ff # Always create a merge commit
+   - # Resolve any conflicts that arise
+   - git commit -m "Merge feature/revision1 into feature/revision2"
+
+* Merge `feature/revision2` into `feature/revision3`:
+   - git checkout feature/revision3
+   - git merge feature/revision2 --no-ff
+   - # Resolve any conflicts
+   - git commit -m "Merge feature/revision2 into feature/revision3"
+
+4. Final Merge into `main`: Once feature/revision3 contains all the desired changes (from revision1, revision2, and revision3), merge it into main.
+
+* Update `main` (again, just in case):
+   - git checkout main
+   - git pull origin main
+
+* Merge `feature/revision3` into `main`:
+   - git merge feature/revision3 --no-ff
+   - # Resolve any conflicts
+   - git commit -m "feat: Integrate complete feature (revision1, 2, 3) into main"
+
+**Clean Up**: After a successful merge into main, you can delete the feature branches.
+   - git branch -d feature/revision1
+   - git branch -d feature/revision2
+   - git branch -d feature/revision3
+   - # If you pushed them to remote: git push origin --delete feature/revision1
+
+### Key Practices for a Clean Workflow:
+   * `--no-ff` (No Fast-Forward): Always use git merge --no-ff when merging feature branches into main (or other long-lived branches). This ensures a merge commit is always created, preserving the history of the feature branch and making it clear when a feature was integrated. This creates a more traceable history.
+   * Atomic Commits: Make small, focused commits that do one thing well. This makes code reviews easier and simplifies reverting changes if needed.
+   * Meaningful Commit Messages: Write clear and concise commit messages that explain why a change was made, not just what was changed.
+   * Code Review: Before merging into main, have your changes reviewed by teammates.
+   * Testing: Ensure all tests pass on your feature branch before merging.
+
+### Alternative: Rebasing for a Linear History
+
+If you prefer a perfectly linear history on main (as if all changes were made directly on main one after another), you could use git rebase. This is often used for smaller, independent features.
+
+1. Rebase `feature/revision1` onto `main`:
+
+   - git checkout feature/revision1
+   - git rebase main
+   - # Resolve conflicts during rebase
+2. Rebase `feature/revision2` onto `feature/revision1`:
+
+   - git checkout feature/revision2
+   - git rebase feature/revision1
+   - # Resolve conflicts
+3. Rebase `feature/revision3` onto `feature/revision2`:
+
+   - git checkout feature/revision3
+   - git rebase feature/revision2
+   - # Resolve conflicts
+4. Fast-forward merge `feature/revision3` into `main`:
+
+   - git checkout main
+   - git pull origin main
+   - git merge feature/revision3 --ff-only # This will be a fast-forward merge
+
+**Note**: Rebasing rewrites history, so it should generally not be done on branches that have already been pushed and shared with others, unless you coordinate carefully.
+
+Your previous actions of merging revision3 into revision2, then revision2 into revision1, and finally revision1 into main effectively followed a sequential integration pattern. The main improvement would be to consistently use git merge --no-ff to explicitly mark these integrations in your history.
